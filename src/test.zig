@@ -99,7 +99,7 @@ test "pcm playback" {
         }
     }
 
-    std.time.sleep(1e9);
+    try alsa.checkError(alsa.snd_pcm_drain(device.?));
 
     try alsa.checkError(alsa.snd_pcm_close(device.?));
 }
