@@ -328,3 +328,9 @@ pub extern "asound" fn snd_pcm_hw_params_get_buffer_size(
     *local.snd_pcm_hw_params_t,
     *snd_pcm_uframes_t,
 ) callconv(.C) c_int;
+
+pub extern "asound" fn snd_pcm_hw_params_set_buffer_size(
+    *snd_pcm_t,
+    *local.snd_pcm_hw_params_t,
+    snd_pcm_uframes_t,
+) callconv(.C) c_int;
