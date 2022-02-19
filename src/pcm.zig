@@ -1,5 +1,6 @@
 const std = @import("std");
 const off_t = std.c.off_t;
+const size_t = std.c.size_t;
 
 const list = @import("list.zig");
 const shmarea = @import("shmarea.zig");
@@ -253,4 +254,24 @@ pub extern "asound" fn snd_pcm_open(
     [*c]const u8,
     snd_pcm_stream,
     c_int,
+) callconv(.C) c_int;
+
+pub extern "asound" fn snd_pcm_hw_params_sizeof() callconv(.C) size_t;
+
+pub extern "asound" fn snd_pcm_hw_params_malloc(
+    *?*local.snd_pcm_hw_params,
+) callconv(.C) c_int;
+
+pub extern "asound" fn snd_pcm_hw_params_free(
+    *local.snd_pcm_hw_params,
+) callconv(.C) void;
+
+pub extern "asound" fn snd_pcm_hw_params_copy(
+    *local.snd_pcm_hw_params,
+    *const local.snd_pcm_hw_params,
+) callconv(.C) void;
+
+pub extern "asound" fn snd_pcm_hw_params_any(
+    *snd_pcm,
+    *local.snd_pcm_hw_params,
 ) callconv(.C) c_int;

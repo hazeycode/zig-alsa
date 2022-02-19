@@ -1,3 +1,4 @@
+pub usingnamespace @import("local.zig");
 pub usingnamespace @import("pcm.zig");
 
 const snderr = @import("error.zig");
