@@ -66,7 +66,7 @@ test "pcm playback" {
     var buffer = try std.testing.allocator.alloc(f32, buffer_size * num_channels);
     defer std.testing.allocator.free(buffer);
 
-    const pitch = 440;
+    const pitch: f32 = 261.63;
     const radians_per_sec = pitch * 2 * std.math.pi;
     const sec_per_frame = 1 / @intToFloat(f32, sample_rate);
 
