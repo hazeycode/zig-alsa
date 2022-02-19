@@ -35,15 +35,16 @@ test "pcm playback" {
         device.?,
         hw_params.?,
         switch (builtin.target.cpu.arch.endian()) {
-            .Little => alsa.snd_pcm_format_t.S16_LE,
-            .Big => alsa.snd_pcm_format_t.S16_BE,
+            .Little => alsa.snd_pcm_format_t.FLOAT_LE,
+            .Big => alsa.snd_pcm_format_t.FLOAT_BE,
         },
     ));
 
+    const num_channels = 2;
     try alsa.checkError(alsa.snd_pcm_hw_params_set_channels(
         device.?,
         hw_params.?,
-        2,
+        num_channels,
     ));
 
     var sample_rate: c_uint = 44100;
@@ -62,9 +63,43 @@ test "pcm playback" {
         &buffer_size,
     ));
 
-    std.log.warn("buffer size = {}", .{buffer_size});
+    var buffer = try std.testing.allocator.alloc(f32, buffer_size * num_channels);
+    defer std.testing.allocator.free(buffer);
+
+    const pitch = 440;
+    const radians_per_sec = pitch * 2 * std.math.pi;
+    const sec_per_frame = 1 / @intToFloat(f32, sample_rate);
 
     try alsa.checkError(alsa.snd_pcm_prepare(device.?));
+
+    const total_frames = sample_rate;
+
+    var sec_off: f32 = 0;
+
+    var frame: usize = 0;
+    while (frame < total_frames) {
+        var i: usize = 0;
+        while (i < buffer_size) : (i += 1) {
+            const s = std.math.sin((sec_off + @intToFloat(f32, frame) * sec_per_frame) * radians_per_sec);
+            var channel: usize = 0;
+            while (channel < num_channels) : (channel += 1) {
+                buffer[i * num_channels + channel] = s;
+            }
+            frame += 1;
+        }
+
+        sec_off = @mod(sec_off + sec_per_frame * @intToFloat(f32, buffer_size), 1.0);
+
+        if (alsa.snd_pcm_writei(
+            device.?,
+            @ptrCast(*anyopaque, buffer),
+            buffer_size,
+        ) < 0) {
+            try alsa.checkError(alsa.snd_pcm_prepare(device.?));
+        }
+    }
+
+    std.time.sleep(1e9);
 
     try alsa.checkError(alsa.snd_pcm_close(device.?));
 }

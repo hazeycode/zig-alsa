@@ -265,6 +265,12 @@ pub extern "asound" fn snd_pcm_hw_params(
     *local.snd_pcm_hw_params_t,
 ) callconv(.C) c_int;
 
+pub extern "asound" fn snd_pcm_writei(
+    *snd_pcm_t,
+    *anyopaque,
+    snd_pcm_uframes_t,
+) callconv(.C) snd_pcm_sframes_t;
+
 pub extern "asound" fn snd_pcm_hw_params_sizeof() callconv(.C) size_t;
 
 pub extern "asound" fn snd_pcm_hw_params_malloc(
@@ -320,4 +326,3 @@ pub extern "asound" fn snd_pcm_hw_params_get_buffer_size(
     *local.snd_pcm_hw_params_t,
     *snd_pcm_uframes_t,
 ) callconv(.C) c_int;
-
