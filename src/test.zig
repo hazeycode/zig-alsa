@@ -57,13 +57,13 @@ test "pcm playback" {
 
     try alsa.checkError(alsa.snd_pcm_hw_params(device.?, hw_params.?));
 
-    var buffer_size: alsa.snd_pcm_uframes_t = undefined;
+    var buffer_frames: alsa.snd_pcm_uframes_t = undefined;
     try alsa.checkError(alsa.snd_pcm_hw_params_get_buffer_size(
         hw_params.?,
-        &buffer_size,
+        &buffer_frames,
     ));
 
-    var buffer = try std.testing.allocator.alloc(f32, buffer_size * num_channels);
+    var buffer = try std.testing.allocator.alloc(f32, buffer_frames * num_channels);
     defer std.testing.allocator.free(buffer);
 
     const pitch: f32 = 261.63;
@@ -72,31 +72,26 @@ test "pcm playback" {
 
     try alsa.checkError(alsa.snd_pcm_prepare(device.?));
 
-    const total_frames = sample_rate;
-
-    var sec_off: f32 = 0;
-
     var frame: usize = 0;
-    while (frame < total_frames) {
-        var i: usize = 0;
-        while (i < buffer_size) : (i += 1) {
-            const s = std.math.sin((sec_off + @intToFloat(f32, frame) * sec_per_frame) * radians_per_sec);
-            var channel: usize = 0;
-            while (channel < num_channels) : (channel += 1) {
-                buffer[i * num_channels + channel] = s;
-            }
-            frame += 1;
+    while (frame < buffer_frames) : (frame += 1) {
+        const s = std.math.sin((@intToFloat(f32, frame) * sec_per_frame) * radians_per_sec);
+        var channel: usize = 0;
+        while (channel < num_channels) : (channel += 1) {
+            buffer[frame * num_channels + channel] = s;
         }
+    }
 
-        sec_off = @mod(sec_off + sec_per_frame * @intToFloat(f32, buffer_size), 1.0);
+    std.log.warn(
+        "playing {} seconds of samples...",
+        .{buffer_frames / sample_rate},
+    );
 
-        if (alsa.snd_pcm_writei(
-            device.?,
-            @ptrCast(*anyopaque, buffer),
-            buffer_size,
-        ) < 0) {
-            try alsa.checkError(alsa.snd_pcm_prepare(device.?));
-        }
+    if (alsa.snd_pcm_writei(
+        device.?,
+        @ptrCast(*anyopaque, buffer),
+        buffer_frames,
+    ) < 0) {
+        try alsa.checkError(alsa.snd_pcm_prepare(device.?));
     }
 
     try alsa.checkError(alsa.snd_pcm_drain(device.?));
