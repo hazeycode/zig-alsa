@@ -1,4 +1,15 @@
 # zig-alsa
 ALSA (libasound) bindings for Zig
 
-**Incomplete & not working**
+NOTE: This library is developed incrementally and bindings are added on a per-demand basis. Pull requests most welcome!
+
+Example usage:
+```zig
+const alsa = @import("alsa/asoundlib.zig");
+
+var device: ?*alsa.snd_pcm = null;
+
+if (alsa.snd_pcm_open(&device, "default", alsa.snd_pcm_stream.PLAYBACK, 0) < 0) {
+    return error.FailedToOpenAlsaPlaybackStream;
+}
+```

@@ -85,7 +85,7 @@ pub const snd_pcm_rbptr = extern struct {
     fd: c_int,
     offset: off_t,
     link_dst_count: c_int,
-    link_dst: ?*?*snd_pcm,
+    link_dst: ?**snd_pcm,
     private_data: ?*anyopaque,
     changed: ?*anyopaque,
 };
@@ -197,9 +197,9 @@ pub const snd_pcm = extern struct {
     hw: snd_pcm_rbptr,
     min_align: snd_pcm_uframes,
     flags: c_uint,
-    mmap_channels: ?[*]snd_pcm_channel_info,
-    running_areas: ?[*]snd_pcm_channel_area,
-    stopped_areas: ?[*]snd_pcm_channel_area,
+    mmap_channels: [*]snd_pcm_channel_info,
+    running_areas: [*]snd_pcm_channel_area,
+    stopped_areas: [*]snd_pcm_channel_area,
     ops: ?*const snd_pcm_ops,
     fast_ops: ?*const snd_pcm_fast_ops,
     op_arg: ?*snd_pcm,
@@ -249,7 +249,7 @@ pub const snd_pcm_channel_area = extern struct {
 };
 
 pub extern "asound" fn snd_pcm_open(
-    ?*?*snd_pcm,
+    *?*snd_pcm,
     [*c]const u8,
     snd_pcm_stream,
     c_int,
