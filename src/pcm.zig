@@ -256,6 +256,15 @@ pub extern "asound" fn snd_pcm_open(
     c_int,
 ) callconv(.C) c_int;
 
+pub extern "asound" fn snd_pcm_close(*snd_pcm_t) callconv(.C) c_int;
+
+pub extern "asound" fn snd_pcm_prepare(*snd_pcm_t) callconv(.C) c_int;
+
+pub extern "asound" fn snd_pcm_hw_params(
+    *snd_pcm_t,
+    *local.snd_pcm_hw_params_t,
+) callconv(.C) c_int;
+
 pub extern "asound" fn snd_pcm_hw_params_sizeof() callconv(.C) size_t;
 
 pub extern "asound" fn snd_pcm_hw_params_malloc(
@@ -275,3 +284,40 @@ pub extern "asound" fn snd_pcm_hw_params_any(
     *snd_pcm_t,
     *local.snd_pcm_hw_params_t,
 ) callconv(.C) c_int;
+
+pub extern "asound" fn snd_pcm_hw_params_set_rate_resample(
+    *snd_pcm_t,
+    *local.snd_pcm_hw_params_t,
+    c_uint,
+) callconv(.C) c_int;
+
+pub extern "asound" fn snd_pcm_hw_params_set_access(
+    *snd_pcm_t,
+    *local.snd_pcm_hw_params_t,
+    snd_pcm_access_t,
+) callconv(.C) c_int;
+
+pub extern "asound" fn snd_pcm_hw_params_set_format(
+    *snd_pcm_t,
+    *local.snd_pcm_hw_params_t,
+    snd_pcm_format_t,
+) callconv(.C) c_int;
+
+pub extern "asound" fn snd_pcm_hw_params_set_channels(
+    *snd_pcm_t,
+    *local.snd_pcm_hw_params_t,
+    c_uint,
+) callconv(.C) c_int;
+
+pub extern "asound" fn snd_pcm_hw_params_set_rate_near(
+    *snd_pcm_t,
+    *local.snd_pcm_hw_params_t,
+    ?*c_uint,
+    ?*c_int,
+) callconv(.C) c_int;
+
+pub extern "asound" fn snd_pcm_hw_params_get_buffer_size(
+    *local.snd_pcm_hw_params_t,
+    *snd_pcm_uframes_t,
+) callconv(.C) c_int;
+
