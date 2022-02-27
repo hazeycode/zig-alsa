@@ -269,7 +269,7 @@ pub extern "asound" fn snd_pcm_hw_params(
 
 pub extern "asound" fn snd_pcm_writei(
     ?*snd_pcm_t,
-    ?*anyopaque,
+    *anyopaque,
     snd_pcm_uframes_t,
 ) callconv(.C) snd_pcm_sframes_t;
 
@@ -333,4 +333,26 @@ pub extern "asound" fn snd_pcm_hw_params_set_buffer_size(
     ?*snd_pcm_t,
     ?*local.snd_pcm_hw_params_t,
     snd_pcm_uframes_t,
+) callconv(.C) snd_pcm_sframes_t;
+
+pub extern "asound" fn snd_pcm_avail(
+    ?*snd_pcm_t,
+) callconv(.C) c_int;
+
+pub extern "asound" fn snd_pcm_avail_update(
+    ?*snd_pcm_t,
+) callconv(.C) snd_pcm_sframes_t;
+
+pub extern "asound" fn snd_pcm_rewindable(
+    ?*snd_pcm_t,
+) callconv(.C) snd_pcm_sframes_t;
+
+pub extern "asound" fn snd_pcm_rewind(
+    ?*snd_pcm_t,
+    snd_pcm_sframes_t,
+) callconv(.C) snd_pcm_sframes_t;
+
+pub extern "asound" fn snd_pcm_delay(
+    ?*snd_pcm_t,
+    ?*snd_pcm_sframes_t,
 ) callconv(.C) c_int;
