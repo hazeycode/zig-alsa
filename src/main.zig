@@ -4,10 +4,11 @@ pub usingnamespace @import("pcm.zig");
 const snderr = @import("error.zig");
 pub usingnamespace snderr;
 
-pub fn checkError(return_code: c_int) !void {
+pub fn checkError(res: c_int) !u32 {
     const std = @import("std");
-    if (return_code < 0) {
-        std.log.err("{s}", .{snderr.snd_strerror(return_code)});
+    if (res < 0) {
+        std.log.err("{s}", .{snderr.snd_strerror(res)});
         return error.AlsaError;
     }
+    return @intCast(u32, res);
 }
