@@ -260,6 +260,8 @@ pub extern "asound" fn snd_pcm_close(?*snd_pcm_t) callconv(.C) c_int;
 
 pub extern "asound" fn snd_pcm_prepare(?*snd_pcm_t) callconv(.C) c_int;
 
+pub extern "asound" fn snd_pcm_drop(?*snd_pcm_t) callconv(.C) c_int;
+
 pub extern "asound" fn snd_pcm_drain(?*snd_pcm_t) callconv(.C) c_int;
 
 pub extern "asound" fn snd_pcm_start(?*snd_pcm_t) callconv(.C) c_int;
