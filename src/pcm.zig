@@ -386,3 +386,16 @@ pub extern "asound" fn snd_pcm_delay(
     ?*snd_pcm_t,
     ?*snd_pcm_sframes_t,
 ) callconv(.C) c_int;
+
+pub extern "asound" fn snd_pcm_mmap_begin(
+    ?*snd_pcm_t,
+    ?**const snd_pcm_channel_area_t,
+    *snd_pcm_uframes_t,
+    *snd_pcm_uframes_t,
+) callconv(.C) c_int;
+
+pub extern "asound" fn snd_pcm_mmap_commit(
+    ?*snd_pcm_t,
+    snd_pcm_uframes_t,
+    snd_pcm_uframes_t,
+) callconv(.C) snd_pcm_sframes_t;
